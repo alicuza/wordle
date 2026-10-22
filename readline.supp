@@ -1,0 +1,26 @@
+{
+	suppress-rl_initialize
+	Memcheck:Leak
+	match-leak-kinds: reachable
+	...
+	fun:rl_initialize
+	...
+}
+
+{
+	suppress-rl_set_prompt
+	Memcheck:Leak
+	match-leak-kinds: reachable
+	...
+	fun:rl_set_prompt
+	...
+}
+
+{
+	suppress-rl_redisplay
+	Memcheck:Leak
+	match-leak-kinds: reachable
+	...
+	fun:rl_redisplay
+	...
+}
