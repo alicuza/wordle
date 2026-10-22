@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 21:53:51 by sancuta           #+#    #+#             */
-/*   Updated: 2026/10/22 00:46:49 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/10/22 05:40:26 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 bool	get_word(int fd, char *input)
 {
-	uint32	read_len;
+	uint32_t	read_len;
 
 	read_len = read(fd, input, WORD_LEN);
 	if (!read_len)
@@ -30,8 +30,8 @@ bool	get_word(int fd, char *input)
 
 void	read_dict(t_ctx *c)
 {
-	int		fd;
-	uint32	i;
+	int			fd;
+	uint32_t	i;
 
 	errno = 0;
 	fd = open(PATH, O_RDONLY);
@@ -50,31 +50,16 @@ void	read_dict(t_ctx *c)
 void	select_target(t_ctx *c)
 {
 	struct tm	*time;
-	uint32		target_idx;
+	uint32_t	target_idx;
 
 	time = localtime(&time(NULL));
 	target_idx = (time.tm_year * SEED + time.tm_yday) % WORD_CNT;
 }
 
-t_match_type	check_guess(target, pos, guess.ch)
-{
-	uint8	i;
-
-	if (target[pos] == guess.ch)
-		return (MT_MATCH);
-	i = -1;
-	while (i < WORD_LEN)
-	{
-		if (target[++i] == guess.ch)
-			return (MT_WRONG_POS);
-	}
-	return (MT_NO_MATCH);
-}
-
 t_return_type	validate_word(char **dict, char *input)
 {
-	uint32	i;
-	size_t	len;
+	uint32_t	i;
+	size_t		len;
 
 	len = strlen(input);	//TODO: simplify with just strncmp?
 	if (len < WORD_LEN)
@@ -90,30 +75,119 @@ t_return_type	validate_word(char **dict, char *input)
 	return (RT_NOT_FOUND);
 }
 
-void	handle_user_input(t_ctx *c)
+void	check_guess(t_ctx *c)
+{
+	uint8_t	i;
+	uint8_t	j;
+	uint8_t	guess_mask;
+	uint8_t	current_bit;
+
+	guess_mask = 255	// 0b11111111
+
+	i = -1;
+	while(++i < WORD_LEN)
+	{
+		if (c->target[i] == (*c->guess)[i])
+		{
+			current_bit = 1 << i;
+			(*c->type)[i] = MT_MATCH;
+			guess_mask ^= current_bit;
+		}
+	}
+
+	i = -1;
+	while(++i < WORD_LEN)
+	{
+		j = -1;
+		while (++j < WORD_LEN)
+		{
+			current_bit = 1 << j;
+			if (c->target[j] == (*c->guess)[i] && guess_mask & current_bit)
+			{
+				(*c->type)[i] = MT_WRONG_POS;
+				guess_mask ^= current_bit;
+				break ;
+			}
+		}
+	}
+}
+
+void	handle_user_input(t_ctx *c, uint8_t guess_nbr)
 {
 	t_return_type	ret;
+	t_match_type	match;
+	char			*prompt;
 
-	c->guess = readline(PROMPT);
-	ret = validate_word(c->dict, c->guess);
-	while (ret == RT_TOO_SHORT || ret == RT_TOO_LONG)
+	c->guess[guess_nbr] = readline(PROMPT);
+	ret = validate_word(c->dict, c->guess[guess_nbr]);
+	while (ret != RT_FOUND)
 	{
-		c->guess = readline(PROMPT);
-		ret = validate_word(c->dict, c->guess);
+		if (ret == RT_TOO_SHORT)
+			write(1, WARN_TOO_SHORT, strlen(WARN_TOO_SHORT));
+		else if (ret == RT_TOO_LONG)
+			write(1, WARN_TOO_LONG, strlen(WARN_TOO_LONG));
+		else
+			write(1, WARN_UNKNOWN_WORD, strlen(WARN_UNKOWN_WORD));
+		c->guess[guess_nbr] = readline(PROMPT);
+		ret = validate_word(c->dict, c->guess[guess_nbr]);
 	}
-	if (ret == RT_FOUND)
+	check_guess(c);
+}
+
+bool	check_victory(t_ctx *c)
+{
+	uint8_t	i;
+	char	cnt;
+
+	cnt = c->guess_cnt + '0';
+	i = -1;
+	while (++i < WORD_LEN)
 	{
-		print_colour(guess, GREEN, WORD_LEN);
-		return ;
+		if (c->type[c->guess_cnt][i] != MT_MATCH)
+			return (false);
 	}
-	guess.type = check_guess(target, pos, guess.ch);
+	write(1, VICTORY, strlen(VICTORY));
+	write(1, c->guess[c->guess_cnt], WORD_LEN);
+	write(1, VICTORY2, strlen(VICTORY2));
+	write(1, &cnt, 1);
+	write(1, VICTORY3, strlen(VICTORY3));
+	return (true)
 }
 
 void	init_ctx(t_ctx *c)
 {
-	memset(c, 0, sizeof(t_ctx));
+	c->target_idx = 0;
+	memset(c->guess, '_', MAX_GUESS * WORD_LEN);
+	c->guess_cnt = -1;
 	read_dict(c);
 	select_target(c);
+}
+
+void	print_field_guesses(t_ctx *c)
+{
+	uint8_t	i;
+	uint8_t	j;
+	char	field_line[FIELD_LEN];
+
+	i = -1;
+	while (++i < c->guess_cnt)
+	{
+		j = -1;
+		while (++j < FIELD_LEN) //TODO: this doesnt work, probably
+		{
+			if (c->type[i][j] == MT_NO_MATCH)
+				field_line[j] = RESET;
+			else if (c->type[i][j] == MT_MATCH)
+				field_line[j] = GREEN;
+			else if (c->type[i][j] == MT_WRONG_POS)
+				field_line[j] = YELLOW;
+			field_line[j + 1] = c->guess[i][j++];
+			if (++j != FIELD_LEN - 1)
+				field_line[j] = ' ';
+			else
+				field_line[j] = '\n';
+		}
+	}
 }
 
 int	main()
@@ -121,6 +195,13 @@ int	main()
 	t_ctx	c;
 
 	init_ctx(&c);
-	while (++guess_cnt <= 5)
+	while (++c.guess_cnt <= MAX_GUESS)
+	{
 		handle_user_input(&c);
+		if (check_victory(&c))
+			return (0);
+		print_field_guesses(&c);
+		print_field_blanks(&c);
+	}
+	return (0);
 }
