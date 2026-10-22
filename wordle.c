@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 21:53:51 by sancuta           #+#    #+#             */
-/*   Updated: 2026/10/22 09:48:36 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/10/22 10:50:54 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void	select_target(t_ctx *c)
 t_return_type	validate_word(char (*dict)[WORD_LEN + 1], char *input)
 {
 	uint32_t	i;
+	uint8_t		j;
 	size_t		len;
 
 	len = strlen(input);	//TODO: simplify with just strncmp?
@@ -84,6 +85,9 @@ t_return_type	validate_word(char (*dict)[WORD_LEN + 1], char *input)
 	i = -1;
 	while (++i < WORD_CNT)	//TODO: binary search or something faster?
 	{
+		j = -1;
+		while (++j < WORD_LEN)
+			input[j] = tolower(input[j]);
 		if (!strncmp(dict[i], input, WORD_LEN))
 			return (RT_FOUND);
 	}
@@ -97,15 +101,17 @@ void	check_guess(t_ctx *c)
 	uint8_t			guess_mask;
 	uint8_t			current_bit;
 	char			*guess;
+	char			*target;
 	t_match_type	*mt;
 
-	guess_mask = 255;	// 0b11111111
+	guess_mask = 63;	// 0b00111111
 	guess = c->guess[c->guess_cnt];
+	target = c->dict[c->target_idx];
 	mt = c->type[c->guess_cnt];
 	i = -1;
 	while(++i < WORD_LEN)
 	{
-		if (c->dict[c->target_idx][i] == guess[i])
+		if (target[i] == tolower(guess[i]))
 		{
 			current_bit = 1 << i;
 			mt[i] = MT_MATCH;
@@ -116,12 +122,13 @@ void	check_guess(t_ctx *c)
 	i = -1;
 	while(++i < WORD_LEN)
 	{
+		if (mt[i] == MT_MATCH)
+			continue ;
 		j = -1;
 		while (++j < WORD_LEN)
 		{
 			current_bit = 1 << j;
-			if (c->dict[c->target_idx][j] == guess[i]
-				&& guess_mask & current_bit)
+			if (target[j] == tolower(guess[i]) && guess_mask & current_bit)
 			{
 				mt[i] = MT_WRONG_POS;
 				guess_mask ^= current_bit;
@@ -138,10 +145,14 @@ void	handle_user_input(t_ctx *c)
 
 	while (true)
 	{
+		errno = 0;
 		read_line = readline(PROMPT);
 		if (!read_line)
 		{
-			perror("handle_user_input");
+			if (errno)
+				perror("handle_user_input");
+			else
+				write(1, "\n", 1);
 			exit(EXIT_FAILURE);
 		}
 		ret = validate_word(c->dict, read_line);
@@ -176,7 +187,10 @@ bool	check_victory(t_ctx *c)
 	write(1, c->guess[c->guess_cnt], WORD_LEN);
 	write(1, VICTORY2, strlen(VICTORY2));
 	write(1, &cnt, 1);
-	write(1, VICTORY3, strlen(VICTORY3));
+	if (!c->guess_cnt)
+		write(1, VICTORY3a, strlen(VICTORY3a));
+	else
+		write(1, VICTORY3b, strlen(VICTORY3b));
 	return (true);
 }
 

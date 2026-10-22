@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 19:54:10 by sancuta           #+#    #+#             */
-/*   Updated: 2026/10/22 09:46:11 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/10/22 10:55:56 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 # define WORD_LEN 5
 # define FIELD_LEN (3 * WORD_LEN)
 # define WORD_CNT 12972
-# define SEED 65189
+# define SEED 65537
 # define PATH "./words.txt"
 # define PROMPT "Enter a 5 letter word: "
 # define WARN_TOO_SHORT "Too short. "
@@ -37,7 +37,8 @@
 # define WARN_UNKNOWN_WORD "Word is unknown. "
 # define VICTORY "You guessed "
 # define VICTORY2 " in "
-# define VICTORY3 " guesses!\n"
+# define VICTORY3a " guess!\n"
+# define VICTORY3b " guesses!\n"
 # define LOSS "You lost. The word was "
 # define LOSS2 ".\n"
 # define BLANK_FIELD " _ _ _ _ _\n"
