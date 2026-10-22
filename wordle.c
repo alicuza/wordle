@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 21:53:51 by sancuta           #+#    #+#             */
-/*   Updated: 2026/10/22 09:13:07 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/10/22 09:48:36 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ bool	check_victory(t_ctx *c)
 		if (c->type[c->guess_cnt][i] != MT_MATCH)
 			return (false);
 	}
-	write(1, VICTORY, strlen(VICTORY));	//TODO: use a buffer here as well
+	write(1, VICTORY, strlen(VICTORY));
 	write(1, c->guess[c->guess_cnt], WORD_LEN);
 	write(1, VICTORY2, strlen(VICTORY2));
 	write(1, &cnt, 1);
@@ -230,6 +230,13 @@ void	print_field_blanks(t_ctx *c)
 	write(1, "\n", 1);
 }
 
+void	print_loss(t_ctx *c)
+{
+	write(1, LOSS, strlen(LOSS));
+	write(1, c->dict[c->target_idx], WORD_LEN);
+	write(1, LOSS2, strlen(LOSS2));
+}
+
 int	main()
 {
 	t_ctx	c;
@@ -244,5 +251,6 @@ int	main()
 		if (check_victory(&c))
 			return (0);
 	}
+	print_loss(&c);
 	return (0);
 }

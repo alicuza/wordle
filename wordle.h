@@ -6,7 +6,7 @@
 /*   By: sancuta <sancuta@student.42vienna.com      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/10/21 19:54:10 by sancuta           #+#    #+#             */
-/*   Updated: 2026/10/22 08:26:23 by sancuta          ###   ########.fr       */
+/*   Updated: 2026/10/22 09:46:11 by sancuta          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@
 # define VICTORY "You guessed "
 # define VICTORY2 " in "
 # define VICTORY3 " guesses!\n"
+# define LOSS "You lost. The word was "
+# define LOSS2 ".\n"
 # define BLANK_FIELD " _ _ _ _ _\n"
 
 /*=== colours ======*/
