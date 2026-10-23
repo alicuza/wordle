@@ -12,14 +12,12 @@
 
 #include "wordle.h"
 
-/* Marks letters in the right spot green. Returns a bitmask of the
- * target letters that are still unused. */
 static uint8_t	mark_exact(char *guess, char *target, t_match_type *mt)
 {
 	uint8_t	i;
 	uint8_t	guess_mask;
 
-	guess_mask = 63;	// 0b00111111
+	guess_mask = 63;
 	i = -1;
 	while (++i < WORD_LEN)
 	{
@@ -32,8 +30,7 @@ static uint8_t	mark_exact(char *guess, char *target, t_match_type *mt)
 	return (guess_mask);
 }
 
-/* Marks letters that are in the word but in the wrong spot yellow. */
-static void	mark_wrong_pos(char *guess, char *target, t_match_type *mt,
+static uint8_t	mark_wrong_pos(char *guess, char *target, t_match_type *mt,
 	uint8_t guess_mask)
 {
 	uint8_t	i;
@@ -57,10 +54,9 @@ static void	mark_wrong_pos(char *guess, char *target, t_match_type *mt,
 			}
 		}
 	}
+	return (guess_mask);
 }
 
-/* Upgrades each guessed letter's keyboard state; never downgrades
- * (e.g. a green letter stays green even if it's grey elsewhere). */
 static void	update_keys(t_ctx *c)
 {
 	uint8_t		i;
@@ -90,7 +86,7 @@ void	check_guess(t_ctx *c)
 	target = c->dict[c->target_idx];
 	mt = c->type[c->guess_cnt];
 	guess_mask = mark_exact(guess, target, mt);
-	mark_wrong_pos(guess, target, mt, guess_mask);
+	guess_mask = mark_wrong_pos(guess, target, mt, guess_mask);
 	update_keys(c);
 }
 

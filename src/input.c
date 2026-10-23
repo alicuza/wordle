@@ -18,13 +18,13 @@ static t_return_type	validate_word(char (*dict)[WORD_LEN + 1], char *input)
 	uint8_t		j;
 	size_t		len;
 
-	len = strlen(input);	//TODO: simplify with just strncmp?
+	len = strlen(input);
 	if (len < WORD_LEN)
 		return (RT_TOO_SHORT);
 	if (len > WORD_LEN)
 		return (RT_TOO_LONG);
 	i = -1;
-	while (++i < WORD_CNT)	//TODO: binary search or something faster?
+	while (++i < WORD_CNT)
 	{
 		j = -1;
 		while (++j < WORD_LEN)

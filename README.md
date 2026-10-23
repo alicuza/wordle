@@ -72,5 +72,11 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./
 `man readline(3)`
 `man time(3)`
 `man ctime(3)`
+`man open(2)`
+`man read(2)`
 
 [Wordle](https://www.nytimes.com/games/wordle/index.html)
+[Wordle on Wikipedia](https://en.wikipedia.org/wiki/Wordle)
+[GNU Readline Library](https://tiswww.case.edu/php/chet/readline/rltop.html)
+[ANSI escape codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
+[Valgrind suppression files](https://valgrind.org/docs/manual/manual-core.html#manual-core.suppress)

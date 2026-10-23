@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "wordle.h"
+#include <stdlib.h>
 
 static bool	get_word(int fd, char *input)
 {
@@ -43,16 +44,13 @@ static void	read_dict(t_ctx *c)
 	fd = open(PATH, O_RDONLY);
 	while (fd == -1)
 	{
-		if (errno == EINTR)
-		{
-			fd = open(PATH, O_RDONLY);
-			errno = 0;
-		}
-		else
+		if (errno != EINTR)
 		{
 			perror("read_dict");
 			exit(EXIT_FAILURE);
 		}
+		errno = 0;
+		fd = open(PATH, O_RDONLY);
 	}
 	i = -1;
 	while (++i < WORD_CNT && get_word(fd, c->dict[i]))
