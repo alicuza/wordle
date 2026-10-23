@@ -12,21 +12,34 @@
 
 NAME = wordle
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -MD -MP
+CFLAGS = -Wall -Wextra -Werror -MD -MP -DSEED=$(SEED)
+
+CPPFLAGS = -I$(INC_DIR)
 LDLIBS = -lreadline
 
-SRCS = wordle.c
-OBJS = $(SRCS:.c=.o)
-DEPS = $(SRCS:.c=.d)
+SRC_DIR = src
+INC_DIR = inc
+OBJ_DIR = obj
+
+SRCS = main.c init.c input.c check.c print.c
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
+DEPS = $(OBJS:.o=.d)
+
+SEED  =  65537
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) $(CFLAGS) $(LDLIBS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+$(OBJ_DIR):
+	mkdir -p $@
 
 clean:
-	rm -f $(OBJS)
-	rm -f $(DEPS)
+	rm -rf $(OBJ_DIR)
 
 fclean:
 	$(MAKE) clean

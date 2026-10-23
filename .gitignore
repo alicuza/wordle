@@ -1,4 +1,8 @@
 wordle
 *.out
 
+.saviour
 *.sw?
+
+*.o
+*.d
