@@ -49,7 +49,7 @@
 # define KB_ROW1 "qwertyuiop"
 # define KB_ROW2 "asdfghjkl"
 # define KB_ROW3 "zxcvbnm"
-# define FIELD_INDENT (sizeof(KB_ROW1) - 1 - WORD_LEN)
+# define FIELD_INDENT 5
 
 # define RESET	"\033[0m"
 # define GREEN	"\033[38;5;2m"
