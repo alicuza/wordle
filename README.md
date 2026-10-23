@@ -45,6 +45,8 @@ Enter a 5 letter word: crane
 
 Guesses are case-insensitive. Words that are too short, too long, or not in the word list get rejected and don't cost you a try. Press `Ctrl+D` to quit.
 
+You can modify the `SEED` in the `Makefile` to get a new random word.
+
 ### Checking for leaks
 
 readline keeps some memory around on purpose, which valgrind reports as leaks. `readline.supp` hides that noise:
