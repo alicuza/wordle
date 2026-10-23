@@ -1,4 +1,8 @@
+*This project has been created as part of the 42 curriculum by kseltenr, sancuta.*
+
 # wordle
+
+## Description
 
 Wordle in your terminal, written in C.
 
@@ -10,13 +14,15 @@ Guess the secret 5-letter word in 6 tries. After each guess, the letters get col
 
 Like the real Wordle, there's one word per day. Everyone running it on the same day gets the same word.
 
-## Requirements
+## Instructions
+
+### Requirements
 
 - `cc` (gcc or clang)
 - `make`
 - GNU readline (`libreadline-dev` on Debian/Ubuntu, `readline` on Arch/macOS)
 
-## Build & run
+### Build & run
 
 ```sh
 make
@@ -27,7 +33,7 @@ Run it from the repo root, since it reads `./words.txt` from the current directo
 
 Other make rules: `make clean`, `make fclean`, `make re`.
 
-## Example
+### How to play
 
 ```
 Enter a 5 letter word: crane
@@ -38,6 +44,14 @@ Enter a 5 letter word: crane
 ```
 
 Guesses are case-insensitive. Words that are too short, too long, or not in the word list get rejected and don't cost you a try. Press `Ctrl+D` to quit.
+
+### Checking for leaks
+
+readline keeps some memory around on purpose, which valgrind reports as leaks. `readline.supp` hides that noise:
+
+```sh
+valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./wordle
+```
 
 ## How it works
 
@@ -51,13 +65,6 @@ Guesses are case-insensitive. Words that are too short, too long, or not in the 
 | `inc/wordle.h` | Settings (word length, max guesses, messages, colors) and types |
 | `words.txt` | The word list (~13k five-letter words) |
 
-## Checking for leaks
-
-readline keeps some memory around on purpose, which valgrind reports as leaks. `readline.supp` hides that noise:
-
-```sh
-valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./wordle
-```
 ## Resources
 
 `man ascii(7)`
@@ -67,8 +74,3 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./
 `man ctime(3)`
 
 [Wordle]( https://en.wikipedia.org/wiki/Birthday_problem)
-
-## Authors
-
-- sancuta
-- kseltenr
