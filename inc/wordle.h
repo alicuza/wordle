@@ -49,10 +49,8 @@
 # define KB_ROW1 "qwertyuiop"
 # define KB_ROW2 "asdfghjkl"
 # define KB_ROW3 "zxcvbnm"
-/* Spaces before each board row so it is centred over the keyboard. */
 # define FIELD_INDENT (sizeof(KB_ROW1) - 1 - WORD_LEN)
 
-/*=== colours ======*/
 # define RESET	"\033[0m"
 # define GREEN	"\033[38;5;2m"
 # define YELLOW	"\033[38;5;3m"
@@ -60,19 +58,18 @@
 
 typedef enum e_match_type
 {
-	MT_NO_MATCH,	//grey
-	MT_WRONG_POS,	//yellow
-	MT_MATCH,		//green
+	MT_NO_MATCH,
+	MT_WRONG_POS,
+	MT_MATCH,
 	MT_COUNT
 }	t_match_type;
 
-/* Best known state of a letter, shown on the keyboard. */
 typedef enum e_key_state
 {
-	KS_UNUSED,		//default colour
-	KS_ABSENT,		//grey
-	KS_WRONG_POS,	//yellow
-	KS_MATCH,		//green
+	KS_UNUSED,
+	KS_ABSENT,
+	KS_WRONG_POS,
+	KS_MATCH,
 	KS_COUNT
 }	t_key_state;
 
@@ -97,17 +94,13 @@ typedef struct s_ctx
 	bool			victory;
 }	t_ctx;
 
-/*=== init.c =======*/
 void	init_ctx(t_ctx *c);
 
-/*=== input.c ======*/
 void	handle_user_input(t_ctx *c);
 
-/*=== check.c ======*/
 void	check_guess(t_ctx *c);
 bool	check_victory(t_ctx *c);
 
-/*=== print.c ======*/
 void	print_field_guesses(t_ctx *c);
 void	print_field_blanks(t_ctx *c);
 void	print_loss(t_ctx *c);
