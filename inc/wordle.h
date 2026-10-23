@@ -13,23 +13,24 @@
 #ifndef WORDLE_H
 # define WORDLE_H
 
-# include <unistd.h>			// read, write, close
-# include <sys/stat.h>			// stat
-# include <fcntl.h>				// open
+# include <unistd.h>
+# include <sys/stat.h>
+# include <fcntl.h>
 # include <stdio.h>
-# include <readline/readline.h>	// readline
+# include <readline/readline.h>
 # include <time.h>
 # include <errno.h>
 # include <stdint.h>
 # include <stdbool.h>
 # include <stdlib.h>
 # include <string.h>
-# include <ctype.h>			// tolower
+# include <ctype.h>
 
 # define MAX_GUESS 6
 # define WORD_LEN 5
 # define FIELD_LEN (3 * WORD_LEN)
 # define WORD_CNT 12972
+# define GUESS_MARK 63
 # ifndef SEED
 #  define SEED 65537
 # endif
