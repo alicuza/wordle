@@ -3,3 +3,6 @@ wordle
 
 .saviour
 *.sw?
+
+*.o
+*.d

@@ -24,6 +24,7 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <string.h>
+# include <ctype.h>			// tolower
 
 # define MAX_GUESS 6
 # define WORD_LEN 5
@@ -76,6 +77,19 @@ typedef struct s_ctx
 	bool			victory;
 }	t_ctx;
 
+/*=== init.c =======*/
+void	init_ctx(t_ctx *c);
 
+/*=== input.c ======*/
+void	handle_user_input(t_ctx *c);
+
+/*=== check.c ======*/
+void	check_guess(t_ctx *c);
+bool	check_victory(t_ctx *c);
+
+/*=== print.c ======*/
+void	print_field_guesses(t_ctx *c);
+void	print_field_blanks(t_ctx *c);
+void	print_loss(t_ctx *c);
 
 #endif
