@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kseltenr <kseltenr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/10/23 20:44:27 by kseltenr          #+#    #+#             */
+/*   Updated: 2026/10/23 20:44:59 by kseltenr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "wordle.h"
 
 /* Marks letters in the right spot green. Returns a bitmask of the
@@ -47,6 +59,26 @@ static void	mark_wrong_pos(char *guess, char *target, t_match_type *mt,
 	}
 }
 
+/* Upgrades each guessed letter's keyboard state; never downgrades
+ * (e.g. a green letter stays green even if it's grey elsewhere). */
+static void	update_keys(t_ctx *c)
+{
+	uint8_t		i;
+	uint8_t		letter;
+	t_key_state	state;
+
+	i = -1;
+	while (++i < WORD_LEN)
+	{
+		letter = tolower(c->guess[c->guess_cnt][i]) - 'a';
+		if (letter >= ALPHA_LEN)
+			continue ;
+		state = (t_key_state)(c->type[c->guess_cnt][i] + 1);
+		if (state > c->keys[letter])
+			c->keys[letter] = state;
+	}
+}
+
 void	check_guess(t_ctx *c)
 {
 	char			*guess;
@@ -59,6 +91,7 @@ void	check_guess(t_ctx *c)
 	mt = c->type[c->guess_cnt];
 	guess_mask = mark_exact(guess, target, mt);
 	mark_wrong_pos(guess, target, mt, guess_mask);
+	update_keys(c);
 }
 
 bool	check_victory(t_ctx *c)

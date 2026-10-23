@@ -43,11 +43,18 @@
 # define LOSS "You lost. The word was "
 # define LOSS2 ".\n"
 # define BLANK_FIELD " _ _ _ _ _\n"
+# define ALPHA_LEN 26
+# define KB_ROW1 "qwertyuiop"
+# define KB_ROW2 "asdfghjkl"
+# define KB_ROW3 "zxcvbnm"
+/* Spaces before each board row so it is centred over the keyboard. */
+# define FIELD_INDENT (sizeof(KB_ROW1) - 1 - WORD_LEN)
 
 /*=== colours ======*/
 # define RESET	"\033[0m"
 # define GREEN	"\033[38;5;2m"
 # define YELLOW	"\033[38;5;3m"
+# define GREY	"\033[38;5;8m"
 
 typedef enum e_match_type
 {
@@ -56,6 +63,16 @@ typedef enum e_match_type
 	MT_MATCH,		//green
 	MT_COUNT
 }	t_match_type;
+
+/* Best known state of a letter, shown on the keyboard. */
+typedef enum e_key_state
+{
+	KS_UNUSED,		//default colour
+	KS_ABSENT,		//grey
+	KS_WRONG_POS,	//yellow
+	KS_MATCH,		//green
+	KS_COUNT
+}	t_key_state;
 
 typedef enum e_return_type
 {
@@ -72,6 +89,7 @@ typedef struct s_ctx
 	t_match_type	type[MAX_GUESS][WORD_LEN];
 	char			dict[WORD_CNT][WORD_LEN + 1];
 	char			guess[MAX_GUESS][WORD_LEN + 1];
+	t_key_state		keys[ALPHA_LEN];
 	uint8_t			guess_cnt;
 	uint8_t			correct_char_cnt;
 	bool			victory;
@@ -91,5 +109,6 @@ bool	check_victory(t_ctx *c);
 void	print_field_guesses(t_ctx *c);
 void	print_field_blanks(t_ctx *c);
 void	print_loss(t_ctx *c);
+void	print_keyboard(t_ctx *c);
 
 #endif
