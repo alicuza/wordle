@@ -30,7 +30,9 @@
 # define WORD_LEN 5
 # define FIELD_LEN (3 * WORD_LEN)
 # define WORD_CNT 12972
-# define SEED 65537
+# ifndef SEED
+#  define SEED 65537
+# endif
 # define PATH "./words.txt"
 # define PROMPT "Enter a 5 letter word: "
 # define WARN_TOO_SHORT "Too short. "

@@ -12,7 +12,8 @@
 
 NAME = wordle
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -MD -MP
+CFLAGS = -Wall -Wextra -Werror -MD -MP -DSEED=$(SEED)
+
 CPPFLAGS = -I$(INC_DIR)
 LDLIBS = -lreadline
 
@@ -23,6 +24,8 @@ OBJ_DIR = obj
 SRCS = main.c init.c input.c check.c print.c
 OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.o))
 DEPS = $(OBJS:.o=.d)
+
+SEED  =  65537
 
 all: $(NAME)
 
