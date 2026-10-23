@@ -66,6 +66,8 @@ valgrind --leak-check=full --show-leak-kinds=all --suppressions=readline.supp ./
 `man time(3)`
 `man ctime(3)`
 
+[Wordle]( https://en.wikipedia.org/wiki/Birthday_problem)
+
 ## Authors
 
 - sancuta
